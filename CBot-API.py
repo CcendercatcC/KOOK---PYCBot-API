@@ -6,7 +6,7 @@ import asyncio
 import urllib.request
 import zlib
 
-async def useAPI(addr,Token):
+async def useAPI(addr,Token):#访问kook api的方法,自动将返回的Json转为字典 需要提供地址（如/api/v3/gateway/index 为Gateway的地址）和Token
     return json.loads(urllib.request.urlopen(urllib.request.Request("https://www.kookapp.cn/"+addr,headers={'Authorization': 'Bot '+Token})).read())
 
 async def GetWay(Token,compress=1):
@@ -15,8 +15,8 @@ async def GetWay(Token,compress=1):
     while True:
         WaitTime=2
         try:
-            return (await asyncio.create_task(useAPI("/api/v3/gateway/index?compress="+str(compress), Token)))["data"]["url"]
-        except Exception as e:
+            return (await asyncio.create_task(useAPI("/api/v3/gateway/index?compress="+str(compress), Token)))["data"]["url"] #调用useAPI获取Gateway地址
+        except Exception as e:#出现异常时自动开始指数回退（参考PHP-Bot）
             print("CBot>",str(e))
             if WaitTime>=60:
                 WaitTime=60
@@ -28,16 +28,16 @@ async def GetWay(Token,compress=1):
                 index+=1
             continue
 
-async def Receive(url,compress=1):
-    async with websockets.connect(url) as websocket:
+async def Receive(url,compress=1):#这里提供Gateway的地址
+    async with websockets.connect(url) as websocket:#访问Gateway 并接收报文
         if compress==0:
             data=await websocket.recv()
         else:
-            data=zlib.decompress(await websocket.recv())
+            data=zlib.decompress(await websocket.recv())#用于解压报文
         JsData = json.loads(data)
-        Code = JsData["d"]["code"]
+        Code = JsData["d"]["code"] #提取状态码 用于发起异常
         if JsData["s"]==1 or JsData["s"]==5:
-            if Code!=0:
+            if Code!=0:#后面用来发起异常的 方便使用者根据实际情况调整
                 if Code == 40100:
                     raise ValueError["Missing Parameter!"]
                 if Code == 40101:
@@ -55,6 +55,6 @@ async def Receive(url,compress=1):
         return JsData
 
 
-asyncio.run(Receive(asyncio.run(GetWay("1/MTUxNzE=/pbHK+iz6seAU0CDKiNYN1g=="))))
+asyncio.run(Receive(asyncio.run(GetWay("1/MTUxNzE=/pbHK+iz6seAU0CDKiNYN1g==")))) #测试用的代码 忘删了( Token失效了 不用试了
 
 
