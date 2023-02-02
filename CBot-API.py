@@ -6,6 +6,9 @@ import asyncio
 import urllib.request
 import zlib
 
+#注意:由于本人的技术原因 暂时只支持WebSocket
+
+
 async def useAPI(addr,Token):#访问kook api的方法,自动将返回的Json转为字典 需要提供地址（如/api/v3/gateway/index 为Gateway的地址）和Token
     return json.loads(urllib.request.urlopen(urllib.request.Request("https://www.kookapp.cn/"+addr,headers={'Authorization': 'Bot '+Token})).read())
 
