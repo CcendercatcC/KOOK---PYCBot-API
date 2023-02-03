@@ -31,8 +31,11 @@ async def GetWay(Token,compress=1):
                 index+=1
             continue
 
-async def Receive(url,compress=1):#这里提供Gateway的地址
-    async with websockets.connect(url) as websocket:#访问Gateway 并接收报文
+async def Connect(url):#用于连接 返回已经连接的Websocket，提供WateGate
+    return async websockets.connect(url)
+
+async def Receive(websocket,compress=1):#这里提供Websocket
+    async websocket:#访问Gateway 并接收报文
         if compress==0:
             data=await websocket.recv()
         else:
@@ -58,6 +61,7 @@ async def Receive(url,compress=1):#这里提供Gateway的地址
         return JsData
 
 
-asyncio.run(Receive(asyncio.run(GetWay("1/MTUxNzE=/pbHK+iz6seAU0CDKiNYN1g==")))) #测试用的代码 忘删了( Token失效了 不用试了
+
+
 
 
