@@ -37,9 +37,9 @@ async def Connect(url):#用于连接 返回已经连接的Websocket，提供Wate
 async def Receive(websocket,compress=1):#这里提供Websocket
     #访问Gateway 并接收报文
     if compress==0:
-        data=await websocket.recv()
+        data = await websocket.recv()
     else:
-        data=await zlib.decompress(await websocket.recv())#用于解压报文
+        data= zlib.decompress(await websocket.recv())#用于解压报文
     JsData = json.loads(data)
     Code = JsData["d"]["code"] #提取状态码 用于发起异常
     if JsData["s"]==1 or JsData["s"]==5:
@@ -68,7 +68,7 @@ async def Ping(websocket,sn):
     ping["sn"] = sn
     await Sent(websocket,ping)
 
-async def Retriever(websocket,ReturnList,ConditionList,compress=1):#检索器
+async def Retriever(websocket,ReturnList,ConditionList,compress=1,sleeptime=0.05):#检索器
     while True:
         ReturnList.append(await Receive(websocket,compress))
         for Judge in ConditionList:
@@ -81,22 +81,11 @@ async def Retriever(websocket,ReturnList,ConditionList,compress=1):#检索器
                 return ReturnList[-1]
             except:
                 pass
+        asyncio.sleep(sleeptime)
 
 
 
 
-if __name__ == "__main__":#测试代码
-    print("CBot> GateWay")
-    ws = asyncio.run(Connect(asyncio.run(GetWay("<Token>"))))
-
-    print("CBot> wating for HELLO")
-
-    l = []
-
-
-    ret =asyncio.run(asyncio.wait_for(asyncio.run(Retriever(ws,l,[[["s",1]]])),6))
-    print("CBot> ",ret)
-    sn=0
 
 
 
