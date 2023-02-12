@@ -115,8 +115,6 @@ async def Retriever(
                 return ReturnList[-1]
             except:
                 pass
-        asyncio.sleep(sleeptime)
-
 
 
 async def main():
