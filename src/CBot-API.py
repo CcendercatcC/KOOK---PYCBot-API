@@ -57,6 +57,7 @@ async def Connect(url):  # 用于连接 返回已经连接的Websocket，提供W
     return await websockets.connect(url)
 
 
+
 async def Receive(websocket, compress=1):  # 这里提供Websocket
     # 访问Gateway 并接收报文
     if compress == 0:
@@ -98,6 +99,7 @@ async def Ping(websocket, sn):
     await Sent(websocket, ping)
 
 
+
 async def Retriever(
     websocket, ReturnList, ConditionList, compress=1
 ):  # 检索器
@@ -113,13 +115,15 @@ async def Retriever(
                 return ReturnList[-1]
             except:
                 pass
+        asyncio.sleep(sleeptime)
+
 
 
 async def main():
     '''程序入口'''
     print("CBot> GateWay")
     l = []
-    url = await GetWay("1/MTUzMzQ=/Fx08J7b32HGVL1Lq/4ELnw==")
+    url = await GetWay("<Token>")
     print("CBot> wating for HELLO")
     async with websockets.connect(url) as ws:
         ret = await Retriever(ws, l, [[["s", 1]]])
@@ -129,3 +133,4 @@ async def main():
 
 if __name__ == "__main__":  # 测试代码
     asyncio.run(main())
+
